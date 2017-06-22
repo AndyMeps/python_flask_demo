@@ -1,20 +1,23 @@
-from werkzeug.security import safe_str_cmp
+""" Security definition for the API """
 from user import User
+from werkzeug.security import safe_str_cmp
 
-users = [
+USERS = [
     User(1, 'bob', 'asdf')
 ]
 
-username_mapping = {u.username: u for u in users}
+USERNAME_MAPPING = {u.username: u for u in USERS}
 
-userid_mapping = {u.id: u for u in users}
+USERID_MAPPING = {u.id: u for u in USERS}
 
 def authenticate(username, password):
-    user = username_mapping.get(username, None)
+    """ Auth """
+    user = USERNAME_MAPPING.get(username, None)
     if user and safe_str_cmp(user.password, password):
         return user
 
 
 def identity(payload):
+    """ Identity """
     user_id = payload['identity']
-    return userid_mapping.get(user_id, None)
+    return USERID_MAPPING.get(user_id, None)
