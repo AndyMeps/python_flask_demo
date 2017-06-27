@@ -1,11 +1,11 @@
 """ Application entry point. """
-from user import UserRegister
+from resources.user import UserRegister
+from resources.item import Item, ItemList
 from flask import Flask
 from flask_restful import Api
 from flask_jwt import JWT
 
 from security import authenticate, identity
-from item import Item, ItemList
 
 app = Flask(__name__)
 app.secret_key = 'c05051f8-0e6d-4875-afcb-54c7b96ef03f'
