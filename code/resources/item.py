@@ -35,7 +35,7 @@ class Item(Resource):
         item = ItemModel(name, data['price'])
 
         try:
-            item.insert()
+            item.save()
         except:
             return {'message': 'An error occurred inserting the item'}, 500
 
@@ -43,17 +43,9 @@ class Item(Resource):
 
     @jwt_required()
     def delete(self, name):
-        connection = sqlite3.connect('data.db')
-        cursor = connection.cursor()
-        query = "DELETE FROM items WHERE name = ?"
-
-        try:
-            cursor.execute(query, (name,))
-        except:
-            return {'message': 'An error occurred deleting the item'}, 500
-
-        connection.commit()
-        connection.close()
+        item = ItemModel.find_by_name(name)
+        if item:
+            item.delete()
 
         return {'message': 'Item deleted'}
 
@@ -62,20 +54,15 @@ class Item(Resource):
         data = Item.parser.parse_args()
 
         item = ItemModel.find_by_name(name)
-        updated_item = ItemModel(name, data['price'])
 
         if item is None:
-            try:
-                updated_item.insert()
-            except:
-                return {'message': 'An error occurred inserting the item'}, 500
+            item = ItemModel(name, data['price'])
         else:
-            try:
-                updated_item.update()
-            except:
-                return {'message': 'An error occurred updating the item'}, 500
+            item.price = data['price']
 
-        return updated_item.json()
+        item.save()
+
+        return item.json()
 
 
 class ItemList(Resource):
@@ -90,7 +77,7 @@ class ItemList(Resource):
         items = []
 
         for row in result:
-            items.append({'name': row[0], 'price': row[1]})
+            items.append({'id': row[0], 'name': row[1], 'price': row[2]})
 
         connection.close()
 

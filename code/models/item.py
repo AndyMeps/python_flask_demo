@@ -1,9 +1,14 @@
 """ Item model """
-import sqlite3
+from db import db
 
+class ItemModel(db.Model):
 
-class ItemModel(object):
-    
+    __tablename__ = 'items'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80))
+    price = db.Column(db.Float(precision=2))
+
     def __init__(self, name, price):
         self.name = name
         self.price = price
@@ -11,40 +16,18 @@ class ItemModel(object):
     @classmethod
     def find_by_name(cls, name):
         """ Find an ItemModel in the database """
-        connection = sqlite3.connect('data.db')
-        cursor = connection.cursor()
-
-        query = "SELECT * FROM items WHERE name = ?"
-
-        result = cursor.execute(query, (name,))
-        row = result.fetchone()
-        connection.close()
-
-        if row:
-            return cls(*row)
+        return cls.query.filter_by(name=name).first()
 
     def json(self):
         """ JSON representation of the ItemModel """
-        return {'name': self.name, 'price': self.price}
+        return {'id': self.id, 'name': self.name, 'price': self.price}
 
-    def insert(self):
-        """ Insert this object in to the database """
-        connection = sqlite3.connect('data.db')
-        cursor = connection.cursor()
+    def save(self):
+        """ Upsert this object in to the database """
+        db.session.add(self)
+        db.session.commit()
 
-        query = "INSERT INTO items VALUES (?, ?)"
-        cursor.execute(query, (self.name, self.price))
-
-        connection.commit()
-        connection.close()
-
-    def update(self):
+    def delete(self):
         """ Update this object in the database """
-        connection = sqlite3.connect('data.db')
-        cursor = connection.cursor()
-        query = 'UPDATE items SET price = ? WHERE name = ?'
-
-        cursor.execute(query, (self.price, self.name))
-
-        connection.commit()
-        connection.close()
+        db.session.delete(self)
+        db.session.commit()
