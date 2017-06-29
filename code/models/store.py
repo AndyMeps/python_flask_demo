@@ -1,5 +1,5 @@
 """ Item model """
-from db import db
+from code.db import db
 
 class StoreModel(db.Model):
     """ Represents a Store in the database """
