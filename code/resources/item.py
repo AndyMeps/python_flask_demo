@@ -12,6 +12,11 @@ class Item(Resource):
                         required=True,
                         help="This field cannot be left blank!")
 
+    parser.add_argument('store_id',
+                        type=int,
+                        required=True,
+                        help="Every item needs a store_id")
+
     @jwt_required()
     def get(self, name):
         try:
@@ -32,7 +37,7 @@ class Item(Resource):
 
         data = Item.parser.parse_args()
 
-        item = ItemModel(name, data['price'])
+        item = ItemModel(name, **data)
 
         try:
             item.save()
@@ -56,9 +61,10 @@ class Item(Resource):
         item = ItemModel.find_by_name(name)
 
         if item is None:
-            item = ItemModel(name, data['price'])
+            item = ItemModel(name, **data)
         else:
             item.price = data['price']
+            item.store_id = data['store_id']
 
         item.save()
 
@@ -67,18 +73,6 @@ class Item(Resource):
 
 class ItemList(Resource):
     def get(self):
-        connection = sqlite3.connect('data.db')
-        cursor = connection.cursor()
+        items = ItemModel.all()
 
-        query = "SELECT * FROM items"
-
-        result = cursor.execute(query)
-
-        items = []
-
-        for row in result:
-            items.append({'id': row[0], 'name': row[1], 'price': row[2]})
-
-        connection.close()
-
-        return {'items': items}
+        return {'items': [item.json() for item in items]}

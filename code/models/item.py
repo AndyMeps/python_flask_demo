@@ -9,9 +9,19 @@ class ItemModel(db.Model):
     name = db.Column(db.String(80))
     price = db.Column(db.Float(precision=2))
 
-    def __init__(self, name, price):
+    # Foreign Key on Store
+    store_id = db.Column(db.Integer, db.ForeignKey('stores.id'))
+    store = db.relationship('StoreModel')
+
+    def __init__(self, name, price, store_id):
         self.name = name
         self.price = price
+        self.store_id = store_id
+
+    @classmethod
+    def all(cls):
+        """ Return all items """
+        return cls.query.all()
 
     @classmethod
     def find_by_name(cls, name):

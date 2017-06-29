@@ -1,5 +1,4 @@
 """ User class definition used for authentication """
-import sqlite3
 from models.user import UserModel
 from flask_restful import Resource, reqparse
 
@@ -30,8 +29,5 @@ class UserRegister(Resource):
 
         user = UserModel(**data)
         user.save()
-
-        connection.commit()
-        connection.close()
 
         return {'message': 'User created successfully.'}, 201
