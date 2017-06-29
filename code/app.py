@@ -1,7 +1,7 @@
 """ Application entry point. """
-from resources.user import UserRegister
-from resources.item import Item, ItemList
-from resources.store import Store, StoreList
+from code.resources.user import UserRegister
+from code.resources.item import Item, ItemList
+from code.resources.store import Store, StoreList
 from flask import Flask
 from flask_restful import Api
 from flask_jwt import JWT
