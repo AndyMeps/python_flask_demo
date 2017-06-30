@@ -1,5 +1,5 @@
 """ Security definition for the API """
-from code.models.user import UserModel
+from models.user import UserModel
 from werkzeug.security import safe_str_cmp
 
 def authenticate(username, password):

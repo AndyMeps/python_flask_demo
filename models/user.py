@@ -1,5 +1,5 @@
 """ User class definition used for authentication """
-from code.db import db
+from db import db
 
 class UserModel(db.Model):
     __tablename__ = 'users'

@@ -1,5 +1,5 @@
 """ User class definition used for authentication """
-from code.models.user import UserModel
+from models.user import UserModel
 from flask_restful import Resource, reqparse
 
 class UserRegister(Resource):

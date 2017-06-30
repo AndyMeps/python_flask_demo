@@ -4,3 +4,5 @@ venv
 *.pyc
 
 code/data\.db
+
+data\.db

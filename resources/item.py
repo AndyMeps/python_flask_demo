@@ -1,6 +1,6 @@
 """ Item Resource """
 
-from code.models.item import ItemModel
+from models.item import ItemModel
 from flask_restful import Resource, reqparse
 from flask_jwt import jwt_required
 
